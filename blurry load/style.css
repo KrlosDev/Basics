@@ -1,0 +1,32 @@
+*{
+    box-sizing: border-box;
+}
+
+body {
+ font-family: 'Roboto',Sans-serif;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ height: 100vh;
+ overflow: hidden;
+ margin: 0;
+
+}
+.bg{
+
+background: url('https://c.wallhere.com/photos/e6/6f/1920x1080_px_black_Dark_darth_vader_Galactic_Empire_Simple_Background_Sith_Star_Wars-786006.jpg!d') no-repeat center center/cover;
+background-color: aqua;
+position: absolute;
+top: -30px;
+left: -30px;
+width: calc(100vw + 60px);
+height: calc(100vh + 60px);
+z-index: -1;
+filter: blur(0px);
+
+}
+.load-text{
+    font-size: 50px;
+    color:white;
+}
