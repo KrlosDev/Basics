@@ -4,7 +4,7 @@ const User = require("../models/user");
 const multer = require("multer");
 const fs = require("fs");
 
-// image uploading
+//* image uploading
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads");
@@ -14,14 +14,14 @@ var storage = multer.diskStorage({
   },
 });
 
-//uploading a single file at a time
+//*uploading a single file at a time
 var upload = multer({
   storage: storage,
 }).single("image");
 
-//routes
+//*routes
 
-//insert user into db
+//*insert user into db
 router.post("/add", upload, (req, res) => {
   const user = new User({
     name: req.body.name,
@@ -34,7 +34,7 @@ router.post("/add", upload, (req, res) => {
     .catch((err) => console.log(err));
 });
 
-//get all users
+//*get all users
 router.get("/", async (req, res) => {
   try {
     const users = await User.find({});
@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//get one user
+//*get one user
 router.get("/edit/:id", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
@@ -54,14 +54,14 @@ router.get("/edit/:id", async (req, res) => {
   }
 });
 
-//update user, not working yet will revisit when building the front end
-router.post("/update/:id", upload, async (req, res) => {
+//todo *update user, not working with thunder client will revisit when building the front end
+router.post("/update/:id", upload, (req, res) => {
   let new_image = "";
 
   if (req.file) {
     new_image = req.file.filename;
     try {
-      fs.unlinkSync("./uploads" + req.body.old_img);
+      fs.unlinkSync("./uploads/" + req.body.old_img);
     } catch (err) {
       console.log(err);
     }
@@ -69,21 +69,23 @@ router.post("/update/:id", upload, async (req, res) => {
     new_image = req.body.old_img;
   }
   try {
-    const updatedUser = await User.findOneAndUpdate(
+    const updated = User.findOneAndUpdate(
       { _id: req.params.id },
-      req.body,
-      { new: true }
+      {
+        name: req.body.name,
+        email: req.body.email,
+        image: new_image,
+      }
     );
-    console.log(updatedUser);
-    res.json(updatedUser);
+    res.send(updated);
   } catch (err) {
-    res.status(500).json({ error: "something went wrong" });
+    res.send(err);
   }
 });
 
-//Delete
-router.get("/delete/:id", async (req, res) => {
-  const user = await User.findOneAndRemove({ _id: req.params.id });
+//*Delete
+router.get("/delete/:id", (req, res) => {
+  const user = User.findOneAndRemove({ _id: req.params.id });
   res.send(user);
   console.log("User deleted");
   if (user.image != "") {
